@@ -4,9 +4,8 @@ __pycache__
 venv/
 .venv/
 *.dat
-data/
 *.bat
 build/
 .gradle
 dist-newstyle/
-
+*.model
