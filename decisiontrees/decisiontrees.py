@@ -137,8 +137,6 @@ def create_tree(xs, ys, depth=None, attrs=None):
 
     attr, threshold = find_optimal_split(xs, ys, attrs)
 
-    print(attr, threshold)
-
     lx, ly, rx, ry = split_data(xs, ys, attr, threshold)
 
     if not ly:
