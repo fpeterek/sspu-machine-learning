@@ -9,3 +9,5 @@ build/
 .gradle
 dist-newstyle/
 *.model
+*.tree
+*.nn
