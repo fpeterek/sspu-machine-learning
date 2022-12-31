@@ -12,7 +12,7 @@ def load_ds(filename):
     with open(filename) as f:
         reader = csv.reader(f, delimiter=',')
         for row in reader:
-            labels.append(row.pop())
+            labels.append(int(row.pop()))
             row = map(lambda x: int(x) if '.' not in x else float(x), row)
             row = list(row)
             row.pop(0)
@@ -22,20 +22,22 @@ def load_ds(filename):
 
 
 @click.command()
-@click.option('--layers', default=None, type=str)
+@click.option('--hidden-layers', default=None, type=str)
 @click.option('--dataset', type=str)
 @click.option('--activation', type=str, default='relu')
-@click.option('--lambda', 'lambda_', type=float, default=1.0)
+@click.option('--lambda', '_lambda', type=float, default=1.0)
 @click.option('--lr', type=float, default=0.1)
 @click.option('--iterations', type=int, default=1000)
 @click.option('--threshold', type=float, default=0.001)
 @click.option('--output-model', type=str)
-def train(layers, dataset, activation, lambda_, lr,
+def train(hidden_layers, dataset, activation, _lambda, lr,
           iterations, threshold, output_model):
     activation = activ.functions[activation.lower()]
     xs, ys = load_ds(dataset)
-    layers = [int(x) for x in layers.split(',')]
-    network = nn.NeuralNetwork(layers, activation, lr, _lambda=lambda_)
+    hidden_layers = [int(x) for x in hidden_layers.split(',')]
+    network = nn.NeuralNetwork(hidden_layers, activation, lr, _lambda=_lambda)
+
+    network.train(xs, ys, iterations=iterations, threshold=threshold)
 
     with open(output_model, 'wb') as out:
         pickle.dump(network, out)

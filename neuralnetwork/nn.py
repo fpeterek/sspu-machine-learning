@@ -1,4 +1,5 @@
 import random
+import math
 
 from typing import Callable
 
@@ -7,6 +8,12 @@ class Neuron:
     def __init__(self, inputs, activation: Callable[float, float]):
         self.activ_fn = activation
         self.weights = [random.random() for _ in range(inputs)]
+
+    @staticmethod
+    def input(activation):
+        neuron = Neuron(1, activation)
+        neuron.weights = [1]
+        return neuron
 
     @property
     def num_inputs(self):
@@ -31,15 +38,9 @@ class NeuralNetwork:
     def __init__(self, layers, activation, lr=0.1, _lambda=1.0):
         self.lr = lr
         self._lambda = _lambda
-        input_layer = [Neuron(1, activation) for _ in range(layers[0])]
-
-        self.layers = [input_layer]
-
-        for i in range(1, len(layers)):
-            layer = layers[i]
-            weights = layers[i-1]
-            neurons = [Neuron(weights, activation) for _ in range(layer)]
-            self.layers.append(neurons)
+        self.layers = []
+        self.hidden_layer_sizes = layers
+        self.activation = activation
 
     def predict_all(self, inputs, get_all_layers=False):
 
@@ -88,7 +89,7 @@ class NeuralNetwork:
             errors.append(err)
 
             neuron = self.layers[-1][i]
-            for j in range(neuron.weights):
+            for j in range(len(neuron.weights)):
                 neuron.weights[j] += self.lr * err * inputs[j]
 
         return errors
@@ -119,12 +120,12 @@ class NeuralNetwork:
         return errors
 
     def train_one(self, inputs, label) -> float:
-        outputs = self.predict_all(inputs, get_all_layers=False)
+        outputs = self.predict_all(inputs, get_all_layers=True)
         err = NeuralNetwork.calc_error(outputs[-1], label)
 
         errors = self.adjust_output_layer(outputs[-2], outputs[-1], label)
 
-        for i in range(len(outputs)-2, 0, step=-1):
+        for i in range(len(outputs)-2, 0, -1):
             errors = self.adjust_hidden_layer(outputs[i-1], outputs[i],
                                               i, errors)
 
@@ -137,8 +138,29 @@ class NeuralNetwork:
             max_error = error if max_error is None else max(max_error, error)
         return max_error
 
+    def init_layers(self, inputs, labels):
+        in_size = len(inputs[0])
+        in_layer = [Neuron.input(self.activation) for _ in range(in_size)]
+        self.layers = [in_layer]
+
+        layer_sizes = self.hidden_layer_sizes[:]
+        layer_sizes.insert(0, in_size)
+        layer_sizes.append(len(set(labels)))
+
+        for i in range(1, len(layer_sizes)):
+            layer = layer_sizes[i]
+            weights = layer_sizes[i-1]
+            neurons = [Neuron(weights, self.activation) for _ in range(layer)]
+            self.layers.append(neurons)
+
     def train(self, inputs, labels, iterations=1000, threshold=0.001):
+        self.init_layers(inputs, labels)
+
+        power = math.ceil(math.log10(iterations) - 1)
+        step = 10**power
         for i in range(iterations):
+            if i % step == 0:
+                print(f'Iteration {i}')
             error = self.train_iter(inputs, labels)
             if error < threshold:
                 break
