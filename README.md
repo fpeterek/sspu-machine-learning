@@ -1,3 +1,10 @@
+## Titanic Dataset
+
+We will be using the very well known Titanic dataset, which can
+be obtained in it's original form i.e. here: https://web.stanford.edu/class/archive/cs/cs109/cs109.1166/problem12.html
+
+The original dataset has been preprocessed so we can avoid unnecessary processing of the dataset.
+
 ## Setup
 
 ```sh
