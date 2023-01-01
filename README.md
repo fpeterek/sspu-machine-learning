@@ -22,4 +22,9 @@ python3 neuralnetwork test --model 'titanic.nn' --dataset titanic/test.csv
 
 ## Computer Vision
 
-https://www.kaggle.com/datasets/utkarshsaxenadn/car-vs-bike-classification-dataset
+Dataset: https://www.kaggle.com/datasets/utkarshsaxenadn/car-vs-bike-classification-dataset
+
+```sh
+python3 cv data/Car-Bike-Dataset
+```
+
