@@ -11,3 +11,4 @@ dist-newstyle/
 *.model
 *.tree
 *.nn
+data/

@@ -20,3 +20,6 @@ python3 neuralnetwork train --hidden-layers '25' --dataset titanic/train.csv --a
 python3 neuralnetwork test --model 'titanic.nn' --dataset titanic/test.csv
 ```
 
+## Computer Vision
+
+https://www.kaggle.com/datasets/utkarshsaxenadn/car-vs-bike-classification-dataset
